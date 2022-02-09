@@ -1,16 +1,14 @@
 const express = require('express')
 const app = express()
-const userModel = require('../models/User')
+const mongoose = require('mongoose')
+const User = mongoose.model('User')
 const jwt = require('jsonwebtoken')
 
-app.post('/index.html', async (req, res) => {
-
-})
-
 app.post('/signup.html', async (req, res) => {
-    const user = new userModel(req.body)
+    const {username, firstname, lastname, password} = req.body
+    const user = new User({ username, firstname, lastname, password })
 
-    const userExists = await userModel.getUsername(user.username)
+    const userExists = await User.findOne({ username })
 
     if (userExists) throw "User with this Username is already registered!"
 
@@ -27,13 +25,13 @@ app.post('/signup.html', async (req, res) => {
     }
 
     res.json({
-        message: "User" + user.username + "Created!"
+        message: "User" + username + "Created!"
     })
 })
 
 app.post('/', async (req, res) => {
-    const user = new userModel(req.body)
-    const users = await userModel.findOne({username, password})
+    const { username, password } = req.body
+    const user = await User.findOne({ username, password })
 
     if(!user) throw "Email & Password did not match..."
 
