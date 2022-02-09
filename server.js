@@ -46,7 +46,7 @@ io.on('connection', (socket) => {
         io.emit('message', 'A user has left the chat!')
     })
 
-    socket.on('message', msg => {
+    socket.on('newMessage', msg => {
         const message = new msg({ msg })
         message.save().then(() => {
             io.emit('message', message)
